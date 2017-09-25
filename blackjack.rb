@@ -101,3 +101,63 @@ def determine_winner(player, dealer)
   player.update_funds(amount)
 
 end
+
+BLACKJACK = 21;
+FACEVALUE = 10;
+DEALER_STANDS_AT = 16;
+
+puts "Welcome to blackjack!"
+puts "You currently have $100 in funds."
+
+keep_playing = true
+player = Player.new
+dealer = Player.new
+while keep_playing
+  deck = Deck.new
+  player.reset
+  dealer.reset
+  puts "How much would you like to bet?"
+  player.place_bet
+  player.hand(deck.draw(2))
+  dealer.hand(deck.draw)
+  puts "\nYour current hand is: #{player.print_hand} \nYour score is: #{player.score}\n."
+  puts "The dealer's hand is: #{dealer.print_hand}\nThe dealers score is: #{dealer.score}\n"
+  dealer.hand(deck.draw)
+  if dealer.score != BLACKJACK
+    until player.score > BLACKJACK do
+      puts "\nDo you want to hit (h) or stand (s)?"
+      players_move = String(gets)
+
+      case players_move[0].downcase
+      when "s"
+        # stand
+        break
+      when "h"
+        # hit
+        puts "\nYou decided to hit!\n"
+        player.hand(deck.draw)
+        puts "\nYour hand is #{player.print_hand}\nYour score is: #{player.score}."
+      else
+        puts "Unknow input. Please try again.\n"
+      end
+    end
+    puts "\nYour move has ended, resolving the dealers hand.\n"
+    while dealer.score <= DEALER_STANDS_AT
+      dealer.hand(deck.draw)
+    end
+    puts "\nThe dealer's hand is #{dealer.print_hand} \nThe dealers score is: #{dealer.score}"
+  end
+  determine_winner(player, dealer)
+  puts "At the end of the game your funds stand at $#{player.funds}."
+  while true
+    puts "Do you want to play again? (Y/N)"
+    play_again = String(gets)
+    case play_again[0].downcase
+    when "y"
+      break
+    when "n"
+      keep_playing = false
+      break
+    end
+  end
+end
