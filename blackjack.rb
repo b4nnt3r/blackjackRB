@@ -1,5 +1,8 @@
 puts "TODO Implement the game of blackjack."
 
+require_relative "Deck"
+require_relative "Card"
+
 class Player
   attr_accessor :score, :funds, :bet, :hand
 
